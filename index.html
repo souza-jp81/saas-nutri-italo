@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriFit - Gestão e Acompanhamento Nutricional</title>
+    <title>Dr. Ítalo Miranda - Nutrição Especializada</title>
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -12,6 +13,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tailwind Configuration & Custom Styles -->
     <script>
         tailwind.config = {
             theme: {
@@ -40,6 +43,9 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        #toast {
+            will-change: transform, opacity;
+        }
     </style>
 </head>
 <body class="h-full flex flex-col font-sans text-slate-800 antialiased">
@@ -67,7 +73,7 @@
                     <div id="currentUserBadge" class="hidden items-center gap-2 bg-slate-100 py-1.5 px-3 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">
                         <i class="fa-solid fa-circle-user text-emerald-600"></i>
                         <span id="currentUserName">Usuário</span>
-                        <button onclick="handleLogout()" class="ml-2 text-red-500 hover:text-red-700 text-xs font-bold transition-all" title="Sair do sistema">
+                        <button id="logoutBtn" class="ml-2 text-red-500 hover:text-red-700 text-xs font-bold transition-all" title="Sair do sistema">
                             <i class="fa-solid fa-right-from-bracket"></i> Sair
                         </button>
                     </div>
@@ -86,30 +92,50 @@
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
         <!-- ========================================== -->
-        <!-- VIEW 0: TELA UNIFICADA DE LOGIN / LOGIN PORTAL -->
+        <!-- SELETOR INICIAL DE TIPO DE ACESSO         -->
         <!-- ========================================== -->
         <section id="portalLoginView" class="max-w-md mx-auto py-8 space-y-6">
-            <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xl space-y-6">
-                <div class="text-center space-y-2">
-                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-sm">
-                        <i class="fa-solid fa-shield-halved"></i>
+            
+            <!-- Cards de Escolha Inicial de Acesso -->
+            <div id="loginTypeSelectorCard" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xl space-y-6 text-center">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-sm">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">Portal Dr. Ítalo Miranda</h2>
+                    <p class="text-xs text-slate-500 mt-1">Selecione como deseja acessar a plataforma</p>
+                </div>
+
+                <div class="space-y-3 pt-2">
+                    <!-- Botão para Tela de Login do Paciente -->
+                    <button id="btnSelectPatientLogin" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-3.5 px-4 rounded-xl transition-all shadow-md hover:shadow-emerald-100 flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-user text-base"></i>
+                        <span>Sou Paciente</span>
+                    </button>
+
+                    <!-- Botão para Tela de Login do Nutricionista -->
+                    <button id="btnSelectNutriLogin" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm py-3.5 px-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-user-doctor text-base"></i>
+                        <span>Sou o Nutricionista</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- TELA 1: LOGIN DEDICADO DO PACIENTE         -->
+            <!-- ========================================== -->
+            <div id="patientLoginCard" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xl space-y-6 hidden">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-2 text-emerald-700 font-bold text-base">
+                        <i class="fa-solid fa-user"></i>
+                        <span>Área do Paciente</span>
                     </div>
-                    <h2 class="text-2xl font-bold text-slate-800">Acesso ao Sistema</h2>
-                    <p class="text-xs text-slate-500">Selecione o seu tipo de acesso para continuar</p>
-                </div>
-
-                <!-- Aba de Alternância entre Paciente e Profissional -->
-                <div class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200 text-xs font-semibold">
-                    <button id="tabLoginPatient" onclick="switchLoginTab('patient')" class="w-1/2 py-2 rounded-lg text-center transition-all bg-white text-emerald-700 shadow-sm font-bold">
-                        <i class="fa-solid fa-user mr-1"></i> Paciente
-                    </button>
-                    <button id="tabLoginNutri" onclick="switchLoginTab('nutri')" class="w-1/2 py-2 rounded-lg text-center transition-all text-slate-600 hover:text-slate-900">
-                        <i class="fa-solid fa-user-doctor mr-1"></i> Dr. Ítalo Miranda
+                    <button id="btnBackFromPatientLogin" class="text-xs text-slate-500 hover:text-slate-800 font-semibold flex items-center gap-1">
+                        <i class="fa-solid fa-arrow-left"></i> Voltar
                     </button>
                 </div>
 
-                <!-- Formulário 1: Login do Paciente -->
-                <form id="formPatientLogin" onsubmit="handlePatientLogin(event)" class="space-y-4">
+                <form id="formPatientLogin" class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">E-mail do Paciente</label>
                         <div class="relative">
@@ -131,19 +157,33 @@
                     </div>
 
                     <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-3 rounded-xl transition-all shadow-md hover:shadow-emerald-100 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-right-to-bracket"></i> Entrar como Paciente
+                        <i class="fa-solid fa-right-to-bracket"></i> Acessar Meu Plano Alimentar
                     </button>
 
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center text-[11px] text-slate-500">
-                        <i class="fa-solid fa-circle-info text-emerald-600 mr-1"></i> Dica de teste: Utilize <strong>ana@email.com</strong> / senha: <strong>123</strong>
+                        <i class="fa-solid fa-circle-info text-emerald-600 mr-1"></i> Paciente de teste: <strong>ana@email.com</strong> / senha: <strong>123</strong>
                     </div>
                 </form>
+            </div>
 
-                <!-- Formulário 2: Login do Nutricionista -->
-                <form id="formNutriLogin" onsubmit="handleNutriLogin(event)" class="space-y-4 hidden">
+            <!-- ========================================== -->
+            <!-- TELA 2: LOGIN DEDICADO DO NUTRICIONISTA    -->
+            <!-- ========================================== -->
+            <div id="nutriLoginCard" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xl space-y-6 hidden">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-2 text-slate-900 font-bold text-base">
+                        <i class="fa-solid fa-user-doctor text-emerald-600"></i>
+                        <span>Acesso Profissional Restrito</span>
+                    </div>
+                    <button id="btnBackFromNutriLogin" class="text-xs text-slate-500 hover:text-slate-800 font-semibold flex items-center gap-1">
+                        <i class="fa-solid fa-arrow-left"></i> Voltar
+                    </button>
+                </div>
+
+                <form id="formNutriLogin" class="space-y-4">
                     <div class="bg-emerald-50/70 p-3 rounded-xl border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2">
                         <i class="fa-solid fa-user-check text-emerald-600 text-base"></i>
-                        <span>Acesso Administrativo Restrito ao <strong>Dr. Ítalo Miranda</strong>.</span>
+                        <span>Acesso exclusivo para <strong>Dr. Ítalo Miranda</strong>.</span>
                     </div>
 
                     <div>
@@ -152,7 +192,7 @@
                             <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <i class="fa-solid fa-user-doctor text-xs"></i>
                             </span>
-                            <input type="text" id="loginNutriEmail" required value="italomiranda" class="w-full pl-9 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                            <input type="text" id="loginNutriEmail" required placeholder="Digite seu usuário ou e-mail" class="w-full pl-9 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200">
                         </div>
                     </div>
 
@@ -162,7 +202,7 @@
                             <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <i class="fa-solid fa-key text-xs"></i>
                             </span>
-                            <input type="password" id="loginNutriPassword" required value="italomirandanutri" class="w-full pl-9 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                            <input type="password" id="loginNutriPassword" required placeholder="••••••••" class="w-full pl-9 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200">
                         </div>
                     </div>
 
@@ -170,8 +210,8 @@
                         <i class="fa-solid fa-lock"></i> Entrar no Painel do Nutricionista
                     </button>
                 </form>
-
             </div>
+
         </section>
 
         <!-- ========================================== -->
@@ -186,13 +226,13 @@
                     </div>
                     <div class="w-full sm:w-auto">
                         <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Paciente Selecionado</p>
-                        <select id="patientSelect" onchange="onPatientSelectChange(this.value)" class="mt-1 block w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm font-bold rounded-xl p-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <select id="patientSelect" class="mt-1 block w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm font-bold rounded-xl p-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                             <!-- Populated dynamically -->
                         </select>
                     </div>
                 </div>
 
-                <button onclick="openModal('newPatientModal')" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-4 py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2">
+                <button id="openNewPatientModalBtn" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-4 py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2">
                     <i class="fa-solid fa-user-plus"></i>
                     <span>Novo Paciente</span>
                 </button>
@@ -238,7 +278,7 @@
                         <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Última Avaliação</p>
                         <h4 id="nutriLastDate" class="text-lg font-bold text-slate-800 mt-1">--/--/----</h4>
                     </div>
-                    <button onclick="openModal('newEvaluationModal')" class="bg-slate-900 hover:bg-slate-800 text-white p-2.5 rounded-xl transition-all shadow-sm" title="Adicionar Medição">
+                    <button id="openNewEvaluationModalBtn" class="bg-slate-900 hover:bg-slate-800 text-white p-2.5 rounded-xl transition-all shadow-sm" title="Adicionar Medição">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
@@ -247,10 +287,10 @@
             <!-- Tabs: Planejamento Alimentar vs Evolução Física -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="border-b border-slate-200 bg-slate-50/50 px-6 pt-4 flex gap-6">
-                    <button id="tabBtnPlan" onclick="switchNutriTab('plan')" class="pb-3 border-b-2 border-emerald-600 text-emerald-600 font-semibold text-sm flex items-center gap-2">
+                    <button id="tabBtnPlan" class="pb-3 border-b-2 border-emerald-600 text-emerald-600 font-semibold text-sm flex items-center gap-2">
                         <i class="fa-solid fa-utensils"></i> Planejamento Nutricional
                     </button>
-                    <button id="tabBtnEvolution" onclick="switchNutriTab('evolution')" class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium text-sm flex items-center gap-2">
+                    <button id="tabBtnEvolution" class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium text-sm flex items-center gap-2">
                         <i class="fa-solid fa-chart-line"></i> Evolução de Peso & IMC
                     </button>
                 </div>
@@ -262,7 +302,7 @@
                             <h3 class="text-lg font-bold text-slate-800">Prescrição de Cardápio</h3>
                             <p class="text-sm text-slate-500">Cadastre até 03 opções alternativas de cardápio para cada refeição.</p>
                         </div>
-                        <button onclick="saveDietPlan()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-2">
+                        <button id="saveDietPlanBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-2">
                             <i class="fa-solid fa-floppy-disk"></i> Salvar Planejamento
                         </button>
                     </div>
@@ -290,7 +330,7 @@
                         <div class="space-y-4">
                             <div class="flex items-center justify-between">
                                 <h4 class="text-base font-bold text-slate-800">Histórico de Registros</h4>
-                                <button onclick="openModal('newEvaluationModal')" class="text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1.5 rounded-lg font-semibold transition-all">
+                                <button id="openNewEvaluationModalBtn2" class="text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1.5 rounded-lg font-semibold transition-all">
                                     + Nova Medição
                                 </button>
                             </div>
@@ -315,7 +355,7 @@
                             <span class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold">
                                 <i class="fa-solid fa-user-doctor mr-1"></i> Acompanhamento Nutricional
                             </span>
-                            <button onclick="handleLogout()" class="bg-red-500/30 hover:bg-red-500/50 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-semibold transition-all flex items-center gap-1">
+                            <button id="patientLogoutBtn" class="bg-red-500/30 hover:bg-red-500/50 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-semibold transition-all flex items-center gap-1">
                                 <i class="fa-solid fa-right-from-bracket"></i> Sair
                             </button>
                         </div>
@@ -396,11 +436,11 @@
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 transform transition-all">
             <div class="flex justify-between items-center border-b pb-3 border-slate-100">
                 <h3 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-user-plus text-emerald-600 mr-2"></i>Cadastrar Novo Paciente</h3>
-                <button onclick="closeModal('newPatientModal')" class="text-slate-400 hover:text-slate-600">
+                <button id="closeNewPatientModalBtn" class="text-slate-400 hover:text-slate-600">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form id="newPatientForm" onsubmit="handleCreatePatient(event)" class="space-y-4">
+            <form id="newPatientForm" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Nome Completo do Paciente</label>
                     <input type="text" id="patientNameInput" required placeholder="Ex: Maria Silva" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200">
@@ -433,7 +473,7 @@
                 </div>
 
                 <div class="flex justify-end gap-3 pt-3">
-                    <button type="button" onclick="closeModal('newPatientModal')" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 text-sm font-semibold hover:bg-slate-50">Cancelar</button>
+                    <button type="button" id="cancelNewPatientModalBtn" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 text-sm font-semibold hover:bg-slate-50">Cancelar</button>
                     <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 shadow-sm">Salvar Paciente</button>
                 </div>
             </form>
@@ -445,11 +485,11 @@
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
             <div class="flex justify-between items-center border-b pb-3 border-slate-100">
                 <h3 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-weight-scale text-emerald-600 mr-2"></i>Registrar Nova Medição</h3>
-                <button onclick="closeModal('newEvaluationModal')" class="text-slate-400 hover:text-slate-600">
+                <button id="closeNewEvalModalBtn" class="text-slate-400 hover:text-slate-600">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form id="newEvaluationForm" onsubmit="handleCreateEvaluation(event)" class="space-y-4">
+            <form id="newEvaluationForm" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Data da Consulta/Medição</label>
                     <input type="date" id="evalDateInput" required class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200">
@@ -459,7 +499,7 @@
                     <input type="number" step="0.1" id="evalWeightInput" required placeholder="Ex: 67.2" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200">
                 </div>
                 <div class="flex justify-end gap-3 pt-3">
-                    <button type="button" onclick="closeModal('newEvaluationModal')" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 text-sm font-semibold hover:bg-slate-50">Cancelar</button>
+                    <button type="button" id="cancelNewEvalModalBtn" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 text-sm font-semibold hover:bg-slate-50">Cancelar</button>
                     <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 shadow-sm">Registrar</button>
                 </div>
             </form>
@@ -472,16 +512,13 @@
         <span id="toastMsg" class="text-sm font-medium">Ação concluída com sucesso!</span>
     </div>
 
-    <!-- ========================================== -->
-    <!-- LOGIC & FIREBASE SCRIPTS                  -->
-    <!-- ========================================== -->
+    <!-- Script Principal JS Integrado -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase Setup & Environment Fallbacks
-        const appId = 'saas-nutri-italo';
+        // Credenciais do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyB4_GucToThQs76QmGyvv37ZFeHi-Z-1Fw",
             authDomain: "saas-nutri-italo.firebaseapp.com",
@@ -492,17 +529,18 @@
             measurementId: "G-X3KR1X358P"
         };
 
+        const appId = 'saas-nutri-italo';
         let app, db, auth;
         let currentUser = null;
         let unsubscribePatientsListener = null;
 
-        // Session Control State
+        // Controle de Sessão
         let session = {
             role: null, // null, 'nutri', 'patient'
             patientId: null
         };
 
-        // Default Definition of 6 Meals
+        // Definição Padrão das 6 Refeições
         const MEALS_DEFINITIONS = [
             { id: 'cafe', name: 'Café da Manhã', icon: 'fa-mug-saucer', color: 'amber' },
             { id: 'lanche_manha', name: 'Lanche da Manhã', icon: 'fa-apple-whole', color: 'emerald' },
@@ -512,7 +550,7 @@
             { id: 'ceia', name: 'Ceia', icon: 'fa-moon', color: 'purple' }
         ];
 
-        // Seed Data Default fallback
+        // Estado Inicial dos Dados
         let appData = {
             selectedPatientId: '1',
             patients: [
@@ -563,28 +601,104 @@
             ]
         };
 
-        // Switch Tabs in Login View
-        window.switchLoginTab = function(type) {
-            const formPatient = document.getElementById('formPatientLogin');
-            const formNutri = document.getElementById('formNutriLogin');
-            const tabPatient = document.getElementById('tabLoginPatient');
-            const tabNutri = document.getElementById('tabLoginNutri');
+        let nutriChartInstance = null;
+        let patientChartInstance = null;
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', async () => {
+            setupEventListeners();
+            
+            const evalDateInput = document.getElementById('evalDateInput');
+            if (evalDateInput) evalDateInput.value = new Date().toISOString().split('T')[0];
+
+            renderAppView();
+
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                await signInAnonymously(auth);
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        currentUser = user;
+                        updateSyncStatus('Sincronizado com Nuvem em Tempo Real', 'emerald');
+                        setupRealtimeSync();
+                    }
+                });
+            } catch (err) {
+                console.warn("Modo offline ativo.", err);
+                updateSyncStatus('Modo Offline (Alterações locais)', 'amber');
+            }
+        });
+
+        function setupEventListeners() {
+            // Eventos do Seletor e Navegação de Telas de Login
+            document.getElementById('btnSelectPatientLogin')?.addEventListener('click', () => showLoginSubCard('patient'));
+            document.getElementById('btnSelectNutriLogin')?.addEventListener('click', () => showLoginSubCard('nutri'));
+            
+            document.getElementById('btnBackFromPatientLogin')?.addEventListener('click', () => showLoginSubCard('selector'));
+            document.getElementById('btnBackFromNutriLogin')?.addEventListener('click', () => showLoginSubCard('selector'));
+
+            document.getElementById('formPatientLogin')?.addEventListener('submit', handlePatientLogin);
+            document.getElementById('formNutriLogin')?.addEventListener('submit', handleNutriLogin);
+
+            document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
+            document.getElementById('patientLogoutBtn')?.addEventListener('click', handleLogout);
+
+            document.getElementById('openNewPatientModalBtn')?.addEventListener('click', () => openModal('newPatientModal'));
+            document.getElementById('closeNewPatientModalBtn')?.addEventListener('click', () => closeModal('newPatientModal'));
+            document.getElementById('cancelNewPatientModalBtn')?.addEventListener('click', () => closeModal('newPatientModal'));
+
+            document.getElementById('openNewEvaluationModalBtn')?.addEventListener('click', () => openModal('newEvaluationModal'));
+            document.getElementById('openNewEvaluationModalBtn2')?.addEventListener('click', () => openModal('newEvaluationModal'));
+            document.getElementById('closeNewEvalModalBtn')?.addEventListener('click', () => closeModal('newEvaluationModal'));
+            document.getElementById('cancelNewEvalModalBtn')?.addEventListener('click', () => closeModal('newEvaluationModal'));
+
+            document.getElementById('newPatientForm')?.addEventListener('submit', handleCreatePatient);
+            document.getElementById('newEvaluationForm')?.addEventListener('submit', handleCreateEvaluation);
+
+            document.getElementById('saveDietPlanBtn')?.addEventListener('click', saveDietPlan);
+            document.getElementById('tabBtnPlan')?.addEventListener('click', () => switchNutriTab('plan'));
+            document.getElementById('tabBtnEvolution')?.addEventListener('click', () => switchNutriTab('evolution'));
+
+            document.getElementById('patientSelect')?.addEventListener('change', (e) => {
+                appData.selectedPatientId = e.target.value;
+                loadPatientData();
+            });
+        }
+
+        function showLoginSubCard(type) {
+            const selectorCard = document.getElementById('loginTypeSelectorCard');
+            const patientCard = document.getElementById('patientLoginCard');
+            const nutriCard = document.getElementById('nutriLoginCard');
+
+            if (!selectorCard || !patientCard || !nutriCard) return;
+
+            selectorCard.classList.add('hidden');
+            patientCard.classList.add('hidden');
+            nutriCard.classList.add('hidden');
 
             if (type === 'patient') {
-                formPatient.classList.remove('hidden');
-                formNutri.classList.add('hidden');
-                tabPatient.className = "w-1/2 py-2 rounded-lg text-center transition-all bg-white text-emerald-700 shadow-sm font-bold";
-                tabNutri.className = "w-1/2 py-2 rounded-lg text-center transition-all text-slate-600 hover:text-slate-900";
+                patientCard.classList.remove('hidden');
+            } else if (type === 'nutri') {
+                nutriCard.classList.remove('hidden');
             } else {
-                formNutri.classList.remove('hidden');
-                formPatient.classList.add('hidden');
-                tabNutri.className = "w-1/2 py-2 rounded-lg text-center transition-all bg-slate-900 text-white shadow-sm font-bold";
-                tabPatient.className = "w-1/2 py-2 rounded-lg text-center transition-all text-slate-600 hover:text-slate-900";
+                selectorCard.classList.remove('hidden');
             }
-        };
+        }
 
-        // Handle Nutri Login
-        window.handleNutriLogin = function(e) {
+        function updateSyncStatus(text, color = 'emerald') {
+            const bar = document.getElementById('syncStatusBar');
+            const textEl = document.getElementById('syncStatusText');
+            if (bar && textEl) {
+                textEl.textContent = text;
+                bar.className = `bg-${color}-50 border-b border-${color}-100 py-1 px-4 text-center text-xs text-${color}-700 font-medium flex items-center justify-center gap-2`;
+            }
+        }
+
+        function handleNutriLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginNutriEmail').value.trim().toLowerCase();
             const password = document.getElementById('loginNutriPassword').value.trim();
@@ -597,10 +711,9 @@
             } else {
                 showToast("Credenciais do Nutricionista inválidas!", "red");
             }
-        };
+        }
 
-        // Handle Patient Login
-        window.handlePatientLogin = function(e) {
+        function handlePatientLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginPatientEmail').value.trim().toLowerCase();
             const password = document.getElementById('loginPatientPassword').value.trim();
@@ -619,19 +732,18 @@
             } else {
                 showToast("E-mail ou senha de paciente incorretos!", "red");
             }
-        };
+        }
 
-        // Logout
-        window.handleLogout = function() {
+        function handleLogout() {
             session.role = null;
             session.patientId = null;
             document.getElementById('loginPatientEmail').value = '';
             document.getElementById('loginPatientPassword').value = '';
+            showLoginSubCard('selector');
             renderAppView();
             showToast("Você saiu do sistema.");
-        };
+        }
 
-        // Render View based on Active Session Role
         function renderAppView() {
             const portalLoginView = document.getElementById('portalLoginView');
             const nutriView = document.getElementById('nutriView');
@@ -660,54 +772,12 @@
                 patientView.classList.remove('hidden');
                 renderPatientView();
             } else {
-                // Not authenticated -> Show Login Portal
                 userBadge.classList.add('hidden');
                 userBadge.classList.remove('flex');
                 portalLoginView.classList.remove('hidden');
             }
         }
 
-        // Initialize App & Firebase
-        window.addEventListener('DOMContentLoaded', async () => {
-            const evalDateInput = document.getElementById('evalDateInput');
-            if (evalDateInput) evalDateInput.value = new Date().toISOString().split('T')[0];
-
-            renderAppView();
-
-            try {
-                app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        currentUser = user;
-                        updateSyncStatus('Sincronizado com Nuvem em Tempo Real', 'emerald');
-                        setupRealtimeSync();
-                    }
-                });
-            } catch (err) {
-                console.warn("Modo offline ativado.", err);
-                updateSyncStatus('Modo Offline (Alterações locais)', 'amber');
-            }
-        });
-
-        function updateSyncStatus(text, color = 'emerald') {
-            const bar = document.getElementById('syncStatusBar');
-            const textEl = document.getElementById('syncStatusText');
-            if (bar && textEl) {
-                textEl.textContent = text;
-                bar.className = `bg-${color}-50 border-b border-${color}-100 py-1 px-4 text-center text-xs text-${color}-700 font-medium flex items-center justify-center gap-2`;
-            }
-        }
-
-        // Firestore Realtime Listener
         function setupRealtimeSync() {
             if (!currentUser || !db) return;
 
@@ -748,12 +818,11 @@
                     await setDoc(patientDocRef, patient);
                 }
             } catch (err) {
-                console.error("Erro ao semear banco de dados:", err);
+                console.error("Erro ao semear banco:", err);
             }
         }
 
-        // Save Diet Plan to Firestore
-        window.saveDietPlan = async function() {
+        async function saveDietPlan() {
             const patient = getSelectedPatient();
             if (!patient.plan) patient.plan = {};
 
@@ -768,18 +837,17 @@
                 try {
                     const patientDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'patients', patient.id);
                     await updateDoc(patientDocRef, { plan: patient.plan });
-                    showToast("Planejamento nutricional salvo e sincronizado na nuvem!");
+                    showToast("Planejamento nutricional salvo!");
                 } catch (err) {
-                    console.error("Erro ao atualizar no Firestore:", err);
+                    console.error("Erro no Firestore:", err);
                     showToast("Salvo localmente!");
                 }
             } else {
                 showToast("Planejamento nutricional salvo!");
             }
-        };
+        }
 
-        // Create New Patient Handler
-        window.handleCreatePatient = async function(e) {
+        async function handleCreatePatient(e) {
             e.preventDefault();
             const name = document.getElementById('patientNameInput').value;
             const email = document.getElementById('patientEmailInput').value;
@@ -817,11 +885,10 @@
 
             renderPatientSelect();
             loadPatientData();
-            showToast("Novo paciente e credenciais salvos!");
-        };
+            showToast("Novo paciente cadastrado!");
+        }
 
-        // Create New Evaluation/Measurement Handler
-        window.handleCreateEvaluation = async function(e) {
+        async function handleCreateEvaluation(e) {
             e.preventDefault();
             const date = document.getElementById('evalDateInput').value;
             const weight = parseFloat(document.getElementById('evalWeightInput').value);
@@ -843,10 +910,9 @@
             }
 
             loadPatientData();
-            showToast("Nova medição gravada!");
-        };
+            showToast("Nova medição registrada!");
+        }
 
-        // Render Patient Select Dropdown
         function renderPatientSelect() {
             const select = document.getElementById('patientSelect');
             if (!select) return;
@@ -856,11 +922,6 @@
                 </option>
             `).join('');
         }
-
-        window.onPatientSelectChange = function(id) {
-            appData.selectedPatientId = id;
-            loadPatientData();
-        };
 
         function getSelectedPatient() {
             return appData.patients.find(p => p.id === appData.selectedPatientId) || appData.patients[0] || { evaluations: [], plan: {} };
@@ -890,9 +951,6 @@
 
             return { imc, classification, color };
         }
-
-        let nutriChartInstance = null;
-        let patientChartInstance = null;
 
         function loadPatientData() {
             const patient = getSelectedPatient();
@@ -975,7 +1033,7 @@
             }).join('');
         }
 
-        window.switchNutriTab = function(tab) {
+        function switchNutriTab(tab) {
             const btnPlan = document.getElementById('tabBtnPlan');
             const btnEvol = document.getElementById('tabBtnEvolution');
             const contentPlan = document.getElementById('tabContentPlan');
@@ -992,7 +1050,7 @@
                 contentEvol.classList.remove('hidden');
                 contentPlan.classList.add('hidden');
             }
-        };
+        }
 
         function renderHistoryList(sortedEvals, height) {
             const container = document.getElementById('historyListContainer');
@@ -1172,22 +1230,24 @@
             });
         }
 
-        // Modals Helper
-        window.openModal = function(id) {
-            document.getElementById(id).classList.remove('hidden');
-        };
+        function openModal(id) {
+            document.getElementById(id)?.classList.remove('hidden');
+        }
 
-        window.closeModal = function(id) {
-            document.getElementById(id).classList.add('hidden');
-        };
+        function closeModal(id) {
+            document.getElementById(id)?.classList.add('hidden');
+        }
 
-        function showToast(msg, type = 'success') {
+        function showToast(msg) {
             const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').textContent = msg;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
+            const toastMsg = document.getElementById('toastMsg');
+            if (toast && toastMsg) {
+                toastMsg.textContent = msg;
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                setTimeout(() => {
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                }, 3000);
+            }
         }
     </script>
 </body>
